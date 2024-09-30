@@ -14,7 +14,7 @@ const db = require('./config/db'); // Importa a conexão com o banco de dados
 const vendasRoutes = require('./routes/vendas');
 // Importar as rotas de transações e autenticação 
 
-
+const authRoutes = require('./routes/auth'); // Importa as rotas de autenticação
 
 
 //inicializar nova aplicação Express
@@ -30,6 +30,10 @@ app.use(bodyParser.json()); // Configura o body-parser para analisar requisiçõ
 
 // Usar as rotas de transações para todas as requisições que começam com /api/transac ons 
 app.use('/veronicafolheados/vendas', vendasRoutes); 
+
+
+app.use('/veronicafolheados/auth', authRoutes);
+
 
 //Rota inicial para testar o servidor
 

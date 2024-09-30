@@ -15,12 +15,14 @@ res.json(results);
 
 
 
+
+
 // ---------------------------------------Função para adicionar uma nova transação 
 const addVendas = (req, res) => { 
-    const { venda_id, cliente_id, data_venda, valor_total } = req.body; 
+    const {cliente_id, data_venda, valor_total } = req.body; 
     db.query( 
-      'INSERT INTO vendas (venda_id, cliente_id, data_venda, valor_total ) VALUES (?, ?, ?, ?)', 
-      [venda_id, cliente_id, data_venda, valor_total], 
+      'INSERT INTO vendas ( cliente_id, data_venda, valor_total ) VALUES (?, ?, ?)', 
+      [cliente_id, data_venda, valor_total], 
       (err, results) => { 
         if (err) { 
           console.error('Erro ao adicionar vendas:', err); 
@@ -34,13 +36,16 @@ const addVendas = (req, res) => {
 
 
 
-// Função para atualizar uma transação existente (substituição completa) 
-const updateVendasPut = (req, res) => { 
+
+
+
+//--------------------- Função para atualizar uma transação existente (substituição completa) 
+const updateVendasput = (req, res) => { 
     const { id } = req.params; 
-    const { venda_id, cliente_id, data_venda, valor_total } = req.body; 
+    const {cliente_id, data_venda, valor_total } = req.body; 
     db.query( 
-      'UPDATE vendas SET venda_id = ?, cliente_id = ?, data_venda = ?, valor_total = ?, WHERE id = ?', 
-      [venda_id, cliente_id, data_venda, valor_total,  id], 
+      'UPDATE vendas SET cliente_id = ?, data_venda = ?, valor_total = ?, WHERE id = ?', 
+      [cliente_id, data_venda, valor_total,  id], 
       (err, results) => { 
         if (err) { 
           console.error('Erro ao atualizar vendas:', err); 
@@ -61,11 +66,54 @@ const updateVendasPut = (req, res) => {
 
 
 
+//----------------------------------- Função para atualizar um produto existente (atualização parcial)
+const updateVendasPatch = (req, res) => {
+  const { id } = req.params;
+  const fields = req.body;
+  const query = [];
+  const values = [];
+
+  for (const [key, value] of Object.entries(fields)) {
+    query.push(`${key} = ?`);
+    values.push(value);
+  }
+
+  values.push(id);
+
+  db.query(
+    `UPDATE vendas SET ${query.join(', ')} WHERE id = ?`,
+    values,
+    (err, results) => {
+      if (err) {
+        console.error('Erro ao atualizar produto:', err);
+        res.status(500).send('Erro ao atualizar produto');
+        return;
+      }
+      if (results.affectedRows === 0) {
+        res.status(404).send('vendas não encontrado');
+        return;
+      }
+      res.send('vendas atualizado com sucesso');
+    }
+  );
+};
+
+ 
 
 
 
-
-
+// -----------------------------------------------Função para deletar uma transação existente 
+const deleteVendas = (req, res) => { 
+  const { id } = req.params; 
+  db.query('DELETE FROM vendas WHERE id = ?', [id], (err, results) => { 
+    if (err) { 
+      console.error('Erro ao deletar venda:', err); 
+      res.status(500).send('Erro ao deletar venda'); 
+      return; 
+    } 
+    res.send('venda deletada com sucesso'); 
+  }); 
+}; 
 
 
 
@@ -73,6 +121,8 @@ const updateVendasPut = (req, res) => {
 module.exports = { 
     getAllVendas,
     addVendas,
-    updateVendasput
+    updateVendasput,
+    updateVendasPatch,
+    deleteVendas,
 
     };
