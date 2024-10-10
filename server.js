@@ -1,7 +1,7 @@
 //importar as bibliotecas 
 
 const db = require('./config/db'); // Importa a conexão com o banco de dados
-
+const clientesRoutes = require('./routes/clientes'); // Importa as rotas de transações
 
 const express = require('express'); // Importa o framework Express 
 const dotenv = require('dotenv'); // Importa o pacote dotenv para gerenciar variáveis de ambiente 
@@ -17,9 +17,10 @@ const app = express(); // Inicializa uma nova aplicação Express
 
 
 //Configura o CORS e o body-parser 
-app.use(cors()); // Habilita o CORS para todas as rotas 
+app.use(cors()); // Habilita o CORS para todas as rotas
 app.use(bodyParser.json()); // Configura o body-parser para analisar requisições JSON 
 
+app.use('/api/clientes', clientesRoutesRoutes);
 
 //Rota inicial para testar o servidor 
 app.get('/', (req, res) => { 
