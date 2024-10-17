@@ -24,7 +24,7 @@ const app = express(); // Inicializa uma nova aplicação Express
 app.use(cors()); // Habilita o CORS para todas as rotas
 app.use(bodyParser.json()); // Configura o body-parser para analisar requisições JSON 
 
-app.use('/api/clientes', clientesRoutesRoutes);
+app.use('/api/clientes', clientesRoutes);
 
 
 app.use('/api/auth', authRoutes); // Configura o servidor para usar as rotas de

@@ -11,11 +11,11 @@ const registerCLientes = async (req, res) => {
     const [existingClientes] = await db.promise().query('SELECT * FROM clientes WHERE email = ?', 
 [email]); 
     if (existingClientes.length > 0) { 
-      return res.status(400).send('Usuário já registrado'); 
+      return res.status(400).send('cliente já registrado'); 
     } 
  
     // Criptografar a senha usando bcrypt 
-    const hashedsenha = await bcrypt.hash(senha, 10); 
+    const hashedSenha = await bcrypt.hash(senha, 10); 
  
     // Inserir o novo usuário no banco de dados 
     await db.promise().query( 
@@ -80,9 +80,9 @@ const requestsenhaReset = async (req, res) => {
       const token = crypto.randomBytes(20).toString('hex'); // Gera um token aleatório
       const expireDate = new Date(Date.now() + 3600000); // 1 hora para expiração
   
-      await db.promise().query('UPDATE clientes SET reset__ = ?, reset_password_expires = ? WHERE email = ?', [token, expireDate, email]);
+      await db.promise().query('UPDATE clientes SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [token, expireDate, email]);
   
-      const resetLink = `http://localhost:3000/reset-password/${token}`; // Link para redefinição de senha
+      const resetLink = `http://localhost:3000/reset-senha/${token}`; // Link para redefinição de senha
       sendEmail(email, 'Recuperação de Senha', `Por favor, clique no link para redefinir sua senha: ${resetLink}`);
   
       res.send('E-mail de recuperação de senha enviado');
@@ -98,18 +98,18 @@ const requestsenhaReset = async (req, res) => {
 
 
 const resetsenha = async (req, res) => {
-    const { token, newPassword } = req.body;
+    const { token, newsenha } = req.body;
   
     try {
-      const [user] = await db.promise().query('SELECT * FROM clientes WHERE reset_password_token = ? AND reset_password_expires > NOW()', [token]);
+      const [clientes] = await db.promise().query('SELECT * FROM clientes WHERE  > NOW()', [token]);
   
       if (user.length === 0) {
         return res.status(400).send('Token inválido ou expirado');
       }
   
-      const hashedPassword = await bcrypt.hash(newPassword, 10); // Criptografa a nova senha
+      const hashedsenha = await bcrypt.hash(newsenha, 10); // Criptografa a nova senha
   
-      await db.promise().query('UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedPassword, user[0].id]);
+      await db.promise().query('UPDATE clientes SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedsenha, clientes[0].id]);
   
       res.send('Senha redefinida com sucesso');
     } catch (err) {

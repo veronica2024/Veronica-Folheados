@@ -1,9 +1,24 @@
-const express = require('express'); // Importa o framework Express 
-const router = express.Router(); // Cria um novo roteador 
-const authController = require('../controllers/authController'); // Importa o controlador de 
-autenticação 
-// Rota para registro de usuário 
-router.post('/register', authController.registerUser); 
-// Rota para login de usuário 
-router.post('/login', authController.loginUser); 
-module.exports = router; // Exporta o roteador
+
+const express = require('express'); // Importa o módulo 'express', um framework web para Node.js, utilizado para criar e gerenciar servidores e rotas de maneira simples e eficiente.
+const router = express.Router(); // Cria um novo roteador, um novo objeto 'router' usando o método 'Router()' do Express, que será utilizado para definir e organizar rotas da aplicação de forma modular.
+const authController = require('../controllers/authController'); // Importa o 'authController', responsável por gerenciar as operações relacionadas à autenticação, como login, registro e verificação de tokens.
+
+
+// Define uma rota POST para '/register', que chama a função 'registerUser' do 'authController' para registrar um novo usuário.
+router.post('/register', authController.registerCLientes);
+
+
+// Define uma rota POST para '/login', que chama a função 'loginUser' do 'authController' para autenticar um usuário.
+router.post('/login', authController.loginClientes);
+
+
+// Define uma rota POST para '/request-password-reset', que chama a função 'requestPasswordReset' do 'authController' para iniciar o processo de redefinição de senha.
+router.post('/request-password-reset', authController.requestsenhaReset);
+
+
+// Define uma rota POST para '/reset-password', que chama a função 'resetPassword' do 'authController' para redefinir a senha do usuário.
+router.post('/reset-password', authController.resetsenha);
+
+
+// Exporta o objeto 'router' para que ele possa ser utilizado em outros arquivos da aplicação, permitindo o acesso às rotas definidas neste módulo.
+module.exports = router;
