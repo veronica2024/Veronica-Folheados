@@ -46,21 +46,20 @@ db.query(
 (err,results) => {
 if(err) {
     console.error('Erro ao atualizar transação', err);
-    res.status(500).send('Erro ao adicionar transação');
+    res.status(500).send('Erro ao adicionar cliente');
 return;
 }
 
 // verifica se nenhuma linha foi afetada pela consulta
 if(results.affectedRows===0){
-res.status(404).send('Transação não encontrada');
+res.status(404).send('cliente não encontrada');
 return;
 }
 
-res.send('Transação atualizada com sucesso');
+res.send(' atualizado com sucesso');
 }
 );
 };
-
 
 
 //Função para atualizar uma transação existente (substituição parcial)
@@ -82,22 +81,21 @@ db.query(
 values,
 (err,results) => {
 if(err) {
-    console.error('Erro ao atualizar transação', err);
-    res.status(500).send('Erro ao adicionar transação');
+    console.error('Erro ao atualizar', err);
+    res.status(500).send('Erro ao adicionar cliente');
 return;
 }
 
 // verifica se nenhuma linha foi afetada pela consulta
 if(results.affectedRows===0){
-res.status(404).send('Transação não encontrada');
+res.status(404).send('cliente não encontrada');
 return;
 }
 
-res.send('Transação atualizada com sucesso');
+res.send('atualizado com sucesso');
 }
 );
 };
-
 
 
 //Função para deletar uma transação existente
@@ -107,26 +105,23 @@ const{id} = req.params;
 db.query('DELETE FROM clientes WHERE id = ?',[id],
 (err,results) => {
 if(err) {
-    console.error('Erro ao deletar transação', err);
-    res.status(500).send('Erro ao deletar transação');
+    console.error('Erro ao deletar cliente', err);
+    res.status(500).send('Erro ao deletar cliente');
 return;
 }
 
 // verifica se nenhuma linha foi afetada pela consulta
 if(results.affectedRows===0){
-res.status(404).send('Transação não encontrada');
+res.status(404).send('cliente não encontrado');
 return;
 }
 
-res.send('Transação deletada com sucesso');
+res.send('cliente deletado com sucesso');
 }
 );
 };
 
 
-
-
- 
 module.exports = { 
 getAllClientes, 
 addclientes,

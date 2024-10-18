@@ -13,11 +13,11 @@ router.post('/login', authController.loginClientes);
 
 
 // Define uma rota POST para '/request-password-reset', que chama a função 'requestPasswordReset' do 'authController' para iniciar o processo de redefinição de senha.
-router.post('/request-password-reset', authController.requestsenhaReset);
+router.post('/request-password-reset', authController.requestpasswordReset);
 
 
 // Define uma rota POST para '/reset-password', que chama a função 'resetPassword' do 'authController' para redefinir a senha do usuário.
-router.post('/reset-password', authController.resetsenha);
+router.post('/reset-password', authController.resetpassword);
 
 
 // Exporta o objeto 'router' para que ele possa ser utilizado em outros arquivos da aplicação, permitindo o acesso às rotas definidas neste módulo.

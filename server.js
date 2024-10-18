@@ -1,58 +1,47 @@
-//importar as bibliotecas 
+const dotenv = require('dotenv'); // Importa o módulo 'dotenv', que carrega variáveis de ambiente de um arquivo '.env' para dentro de 'process.env', permitindo o uso de variáveis de ambiente na aplicação.
+dotenv.config();// Carrega as variáveis de ambiente do arquivo '.env' para o 'process.env', tornando-as acessíveis em toda a aplicação.
 
-const db = require('./config/db'); // Importa a conexão com o banco de dados
-const clientesRoutes = require('./routes/clientes'); // Importa as rotas de transações
+//Importar as Bibliotecas
 
-const authRoutes = require('./routes/auth'); // Importa as rotas de autenticação
+const express = require('express'); // Importa o módulo 'express', um framework web para Node.js, utilizado para criar e gerenciar servidores e rotas de maneira simples e eficiente.
+const cors = require('cors'); // Importa o módulo 'cors', que será utilizado para habilitar o Cross-Origin Resource Sharing (CORS), permitindo que a aplicação receba requisições de diferentes origens.
+const bodyParser = require('body-parser'); // Importa o módulo 'body-parser', que será utilizado para processar e converter o corpo das requisições HTTP em formatos como JSON, facilitando o acesso aos dados enviados no 'req.body'.
+const db = require('./config/db'); // Importa a configuração da conexão com o banco de dados a partir do arquivo 'db' localizado na pasta 'config'.
 
+// Importa as rotas de transações
 
-
-const express = require('express'); // Importa o framework Express 
-const dotenv = require('dotenv'); // Importa o pacote dotenv para gerenciar variáveis de ambiente 
-const cors = require('cors'); // Importa o pacote cors para permi r requisições de diferentes origens 
-const bodyParser = require('body-parser'); // Importa o pacote body-parser para analisar o corpo das requisições HTTP
-
-
-//configurar as variáveis de ambiente 
-dotenv.config(); // Carrega as variáveis definidas no arquivo .env para process.env
-
-//Inicializa uma nova aplicação Express 
-const app = express(); // Inicializa uma nova aplicação Express
+const clientesRoutes = require('./routes/clientes'); // Importa as rotas de transações a partir do arquivo 'transactions.js' localizado na pasta 'routes', para gerenciar as operações relacionadas a transações na aplicação.
+const authRoutes = require('./routes/auth'); // Importa as rotas de autenticação do arquivo 'auth.js' na pasta 'routes', que define as rotas para operações como login, registro e recuperação de senha.
 
 
-//Configura o CORS e o body-parser 
-app.use(cors()); // Habilita o CORS para todas as rotas
-app.use(bodyParser.json()); // Configura o body-parser para analisar requisições JSON 
+//inicializar nova aplicação Express
 
-app.use('/api/clientes', clientesRoutes);
+const app = express(); // Cria uma instância do aplicativo Express, chamada 'app', que será usada para configurar o servidor, definir rotas e gerenciar requisições HTTP.
 
 
-app.use('/api/auth', authRoutes); // Configura o servidor para usar as rotas de
+//configurar o CORS e o bady-Parse
+
+app.use(cors()); // Habilita o middleware 'cors' em toda a aplicação, permitindo que ela aceite requisições de diferentes origens (Cross-Origin Resource Sharing).
+app.use(bodyParser.json()); // Configura o middleware 'body-parser' para processar requisições com o corpo no formato JSON, permitindo que o conteúdo seja acessado através de 'req.body'.
 
 
-//Rota inicial para testar o servidor 
-app.get('/', (req, res) => { 
-  res.send('Servidor está rodando'); // Define uma rota inicial para testar o servidor 
-  });
-
-
-// Configura o servidor para escutar em uma porta específica 
-const PORT = process.env.PORT || 3000; // Define a porta a par r da variável de ambiente ou usa a porta 3000 como padrão 
-app.listen(PORT, () => { 
-console.log(`Servidor rodando na porta ${PORT}`);  
-}); // Escreve uma mensagem informando que o servidor está rodando
+// Usar as rotas de transações para todas as requisições que começam com /api/transactions
+app.use('/clientes', clientesRoutes);
+app.use('/auth', authRoutes); // Configura o middleware para as rotas de autenticação, prefixando todas as rotas de 'authRoutes' com '/api/auth'.
 
 
 
+//Rota inicial para testar o servidor
+
+app.get('/', (req, res) => {
+  res.send(`Servidor está rodando na porta ${PORT}`); // Define uma rota inicial para testar o servidor
+});
 
 
+// Define a porta na qual o servidor irá rodar, usando a variável de ambiente 'PORT' (se definida) ou, caso contrário, a porta 3000. 
+// Inicia o servidor e exibe no console a mensagem indicando que ele está rodando na porta especificada.
 
-
-
-
-
-
-
-
-
-
+const PORT = process.env.PORT || 3000; // Define a porta a partir da variável de ambiente ou usa a porta 3000 como padrão
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`); // Loga uma mensagem informando que o servidor está rodando
+});

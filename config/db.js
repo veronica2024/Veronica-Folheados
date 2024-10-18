@@ -1,5 +1,11 @@
 
-const mysql = require('mysql2'); // Alterar para mysql2 
+const mysql = require('mysql2'); // Alterar para mysql2
+
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_PASS:', process.env.DB_PASS);
+console.log('DB_NAME:', process.env.DB_NAME);
+
 // Cria a conexão com o banco de dados u lizando as variáveis de ambiente 
 const db = mysql.createConnection({ 
 host: process.env.DB_HOST, 
