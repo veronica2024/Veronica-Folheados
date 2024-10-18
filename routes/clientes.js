@@ -5,22 +5,22 @@ const clientesController = require('../controllers/clientesController.js'); // I
 const authMiddleware = require('../middleware/authMiddleware'); // Importa o middleware de autenticação
 
 
-router.get('/', clientesController.getAllClientes);
+router.get('/', authMiddleware, clientesController.getAllClientes);
 
 //Definindo uma rota para adicionar uma nova transação
-router.post('/', clientesController.addclientes);
+router.post('/', authMiddleware, clientesController.addclientes);
 
 
 //Definindo uma rota para atualizar uma trasação existente(substituição completa)
-router.put('/:id', clientesController.updateClientesPut);
+router.put('/:id', authMiddleware, clientesController.updateClientesPut);
 
 
 //Definindo uma rota para atualizar uma trasação existente(substituição parcial)
-router.patch('/:id',  clientesController.updateClientesPatch);
+router.patch('/:id', authMiddleware,  clientesController.updateClientesPatch);
 
 
 //Definindo uma rota para deletar uma transação
-router.delete('/:id', clientesController.deleteclientes);
+router.delete('/:id', authMiddleware, clientesController.deleteclientes);
 
 
 // Exportando o roteador 
