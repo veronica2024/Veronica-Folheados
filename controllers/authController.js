@@ -1,88 +1,81 @@
-const db = require('../config/db'); // Importa a configuração do banco de dados 
-const bcrypt = require('bcrypt'); // Importa o bcrypt para criptografar senhas 
-const jwt = require('jsonwebtoken'); // Importa o jsonwebtoken para gerar tokens JWT 
- 
-// Função para registrar um novo usuário 
-const registerCLientes = async (req, res) => { 
-  const {nome, email, senha, telefone, endereco, data_cadastro  } = req.body; // Desestrutura os dados do corpo da requisição 
- 
- // Verificar se o usuário já existe no banco de dados 
-  try { 
-    const [existingClientes] = await db.promise().query('SELECT * FROM clientes WHERE email = ?', 
-[email]); 
-    if (existingClientes.length > 0) { 
-      return res.status(400).send('cliente já registrado'); 
-    } 
- 
-    // Criptografar a senha usando bcrypt 
-    const hashedsenha = await bcrypt.hash(senha, 10); 
- 
-    // Inserir o novo usuário no banco de dados 
-    await db.promise().query( 
-      'INSERT INTO clientes (nome, email, senha, telefone, endereco, data_cadastro) VALUES (?, ?, ?, ?, ?, ?)', 
-      [nome, email, senha, telefone, endereco, data_cadastro] 
-    ); 
- 
-    res.status(201).send('Usuário registrado com sucesso'); 
-  } catch (err) { 
-    console.error('Erro ao registrar usuário:', err); 
-    res.status(500).send('Erro ao registrar usuário'); 
-  } 
-}; 
+const crypto = require('crypto'); // Importa o módulo 'crypto', que fornece funcionalidades de criptografia, como geração de hashes e criptografia/descriptografia de dados.
+const db = require('../config/db'); // Importa a configuração da conexão com o banco de dados a partir do arquivo 'db' localizado na pasta 'config'.
+const bcrypt = require('bcrypt'); // Importa o módulo 'bcrypt', que será utilizado para realizar a criptografia de senhas e a comparação de senhas criptografadas.
+const jwt = require('jsonwebtoken'); // Importa o módulo 'jsonwebtoken' (JWT), que será utilizado para criar e verificar tokens de autenticação para segurança das rotas.
+const sendEmail = require('../services/emailServices').sendEmail; // Importa a função 'sendEmail' do serviço de e-mail localizado em 'emailService', usada para enviar e-mails a partir da aplicação.
 
+// Função para registrar um novo usuário
+const registerUser = async (req, res) => {
+  const { name, email, password, birth_date } = req.body; // Desestrutura os dados do corpo da requisição
 
+ // Verificar se o usuário já existe no banco de dados
+  try {
+    const [existingUser] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
+    if (existingUser.length > 0) {
+      return res.status(400).send('Usuário já registrado');
+    }
 
+    // Criptografar a senha usando bcrypt
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-//--------------------------------------------------------LOGIN---------------------------------------------------------------------------//
- 
-// Função para autenticar um usuário 
-const loginClientes = async (req, res) => { 
-  const { email, senha } = req.body; // Desestrutura os dados do corpo da requisição 
- 
- // Verificar se o usuário existe no banco de dados 
- 
-  try { 
-    const [senha] = await db.promise().query('SELECT * FROM senha WHERE email = ?', [email]); 
-    if (clientes.length === 0) { 
-      return res.status(400).send('Credenciais inválidas'); 
-    } 
- 
-    // Comparar a senha fornecida com a senha criptografada no banco de dados 
-    const isMatch = await bcrypt.compare(senha, clientes[0].senha); 
-    if (!isMatch) { 
-      return res.status(400).send('Credenciais inválidas'); 
-    } 
- 
-    // Gerar um token JWT 
-    const token = jwt.sign({ clientesId: clientes[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' }); 
- 
-    res.json({ token }); 
-  } catch (err) { 
-    console.error('Erro ao autenticar usuário:', err); 
-    res.status(500).send('Erro ao autenticar usuário'); 
-  } 
-}; 
+    // Inserir o novo usuário no banco de dados
+    await db.promise().query(
+      'INSERT INTO users (name, email, password, birth_date) VALUES (?, ?, ?, ?)',
+      [name, email, hashedPassword, birth_date]
+    );
 
+    res.status(201).send('Usuário registrado com sucesso');
+  } catch (err) {
+    console.error('Erro ao registrar usuário:', err);
+    res.status(500).send('Erro ao registrar usuário');
+  }
+};
 
-//---------------------------------------------------------------------------RECUPERAR SENHA-------------------------------------------------------//
+// Função para autenticar um usuário
+const loginUser = async (req, res) => {
+  const { email, password } = req.body; // Desestrutura os dados do corpo da requisição
+
+ // Verificar se o usuário existe no banco de dados
+
+  try {
+    const [user] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
+    if (user.length === 0) {
+      return res.status(400).send('Credenciais inválidas');
+    }
+
+    // Comparar a senha fornecida com a senha criptografada no banco de dados
+    const isMatch = await bcrypt.compare(password, user[0].password);
+    if (!isMatch) {
+      return res.status(400).send('Credenciais inválidas');
+    }
+
+    // Gerar um token JWT
+    const token = jwt.sign({ userId: user[0].id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    res.json({ token });
+  } catch (err) {
+    console.error('Erro ao autenticar usuário:', err);
+    res.status(500).send('Erro ao autenticar usuário');
+  }
+};
 
 // Função para solicitar redefinição de senha
-const requestpasswordReset = async (req, res) => {
+const requestPasswordReset = async (req, res) => {
     const { email } = req.body;
   
     try {
-      const [clientes] = await db.promise().query('SELECT * FROM clientes WHERE email = ?', [email]);
+      const [user] = await db.promise().query('SELECT * FROM users WHERE email = ?', [email]);
   
-      if (clientes.length === 0) {
+      if (user.length === 0) {
         return res.status(404).send('Usuário não encontrado');
       }
   
       const token = crypto.randomBytes(20).toString('hex'); // Gera um token aleatório
       const expireDate = new Date(Date.now() + 3600000); // 1 hora para expiração
   
-      await db.promise().query('UPDATE clientes SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [token, expireDate, email]);
+      await db.promise().query('UPDATE users SET reset_password_token = ?, reset_password_expires = ? WHERE email = ?', [token, expireDate, email]);
   
-      const resetLink = `http://localhost:3000/reset-senha/${token}`; // Link para redefinição de senha
+      const resetLink = `http://localhost:3000/reset-password/${token}`; // Link para redefinição de senha
       sendEmail(email, 'Recuperação de Senha', `Por favor, clique no link para redefinir sua senha: ${resetLink}`);
   
       res.send('E-mail de recuperação de senha enviado');
@@ -91,25 +84,21 @@ const requestpasswordReset = async (req, res) => {
       res.status(500).send('Erro ao solicitar redefinição de senha');
     }
   };
-
-
-
-//-------------------------------------------------------------------FUNCAO PARA REDEFINIR SENHA--------------------------------------------------
-
-
-const resetpassword = async (req, res) => {
-    const { token, newpassword } = req.body;
+  
+  // Função para redefinir a senha
+  const resetPassword = async (req, res) => {
+    const { token, newPassword } = req.body;
   
     try {
-      const [clientes] = await db.promise().query('SELECT * FROM clientes WHERE  > NOW()', [token]);
+      const [user] = await db.promise().query('SELECT * FROM users WHERE reset_password_token = ? AND reset_password_expires > NOW()', [token]);
   
       if (user.length === 0) {
         return res.status(400).send('Token inválido ou expirado');
       }
   
-      const hashedpassword = await bcrypt.hash(newpassword, 10); // Criptografa a nova senha
+      const hashedPassword = await bcrypt.hash(newPassword, 10); // Criptografa a nova senha
   
-      await db.promise().query('UPDATE clientes SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedpassword, clientes[0].id]);
+      await db.promise().query('UPDATE users SET password = ?, reset_password_token = NULL, reset_password_expires = NULL WHERE id = ?', [hashedPassword, user[0].id]);
   
       res.send('Senha redefinida com sucesso');
     } catch (err) {
@@ -117,12 +106,12 @@ const resetpassword = async (req, res) => {
       res.status(500).send('Erro ao redefinir senha');
     }
   };
-
-
- 
-module.exports = { 
-  registerCLientes, 
-  loginClientes ,
-  requestpasswordReset,
-resetpassword
+  
+    
+// Exporta as funções 'registerUser', 'loginUser', 'requestPasswordReset' e 'resetPassword' para que possam ser acessadas e utilizadas em outros módulos da aplicação.
+module.exports = {
+  registerUser,
+  loginUser,
+  requestPasswordReset, 
+  resetPassword
 };

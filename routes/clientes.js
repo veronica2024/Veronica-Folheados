@@ -1,8 +1,8 @@
 const express = require('express'); // Importa o framework Express 
 const router = express.Router(); // Cria um novo roteador 
-const clientesController = require('../controllers/clientesController.js'); // Importa o controlador de transações 
+const clientesController = require('../controllers/clientesController'); // Importa o controlador de transações 
 // Definindo uma rota para obter todas as transações
-const authMiddleware = require('../middleware/authMiddleware'); // Importa o middleware de autenticação
+const authMiddleware = require('../middlewares/authMiddleware'); // Importa o middleware de autenticação
 
 
 router.get('/', authMiddleware, clientesController.getAllClientes);

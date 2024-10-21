@@ -26,9 +26,8 @@ app.use(bodyParser.json()); // Configura o middleware 'body-parser' para process
 
 
 // Usar as rotas de transações para todas as requisições que começam com /api/transactions
-app.use('/clientes', clientesRoutes);
-app.use('/auth', authRoutes); // Configura o middleware para as rotas de autenticação, prefixando todas as rotas de 'authRoutes' com '/api/auth'.
-
+app.use('/veronica-folheados/clientes', clientesRoutes); // Configura o middleware para as rotas de transações, prefixando todas as rotas de 'transactionsRoutes' com '/api/transactions'.
+app.use('/veronica-folheados/auth', authRoutes); // Configura o middleware para as rotas de autenticação, prefixando todas as rotas de 'authRoutes' com '/api/auth'.
 
 
 //Rota inicial para testar o servidor
@@ -37,9 +36,6 @@ app.get('/', (req, res) => {
   res.send(`Servidor está rodando na porta ${PORT}`); // Define uma rota inicial para testar o servidor
 });
 
-
-// Define a porta na qual o servidor irá rodar, usando a variável de ambiente 'PORT' (se definida) ou, caso contrário, a porta 3000. 
-// Inicia o servidor e exibe no console a mensagem indicando que ele está rodando na porta especificada.
 
 const PORT = process.env.PORT || 3000; // Define a porta a partir da variável de ambiente ou usa a porta 3000 como padrão
 app.listen(PORT, () => {

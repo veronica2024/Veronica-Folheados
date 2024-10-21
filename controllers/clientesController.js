@@ -1,7 +1,7 @@
 const db = require('../config/db'); // Importa a conexão com o banco de dados 
  
 // Função para obter todas as transações 
-const getAllClientes = (req, res) => { 
+const getAllClientes = (req , res) => { 
   db.query('SELECT * FROM clientes', (err, results) => { 
     if (err) { 
       console.error('Erro ao obter clientes:', err); 
@@ -12,23 +12,47 @@ const getAllClientes = (req, res) => {
   }); 
 }; 
  
-// Função para adicionar uma nova transação 
-const addclientes = (req, res) => { 
-  const {nome, email, senha, telefone, endereco, data_cadastro} = req.body; 
-  db.query( 
-    'INSERT INTO clientes (nome, email, senha, telefone, endereco, data_cadastro) VALUES (?,?,?,?,?,?)', 
-    [nome, email, senha, telefone, endereco, data_cadastro], 
-    (err, results) => { 
-      if (err) { 
-        console.error('Erro ao adicionar clientes:', err); 
-        res.status(500).send('Erro ao adicionar clientes'); 
-        return; 
-      } 
-      res.status(201).send('cliente adicionado com sucesso'); 
-    } 
-  ); 
-}; 
+//----------------------------- Com verificação de Duplicidade -------------------------------------------------------------
 
+///Função para adicionar uma nova transação 
+const addclientes = (req,res) => {
+  const {nome, email, senha, telefone, endereco, data_cadastro } = req.body;
+
+//Verificar se a transação já existe
+
+  db.query(
+    'SELECT * FROM cliented WHERE nome=? AND email=? AND senha=? AND telefone=? AND endereco=? AND data_cadastro=?',
+    [nome, email, senha, telefone, endereco, data_cadastro ],
+    (err,results) => {
+      if(err) {
+          console.error('Erro ao adicionar cliente', err);
+          res.status(500).send('Erro ao adicionar cliente');
+          return;
+      }
+
+      if(results.length>0){
+        //se a transação já existe
+        res.status(400).send('cliente duplicada')
+      }
+
+
+// Se a transação não existe, insira-a no banco de dados 
+  db.query(
+      'INSERT INTO clientes (nome, email, senha, telefone, endereco, data_cadastro ) VALUES (?,?,?,?,?,?)',
+      [nome, email, senha, telefone, endereco, data_cadastro ],
+      (err,results) => {
+          if(err) {
+              console.error('Erro ao adicionar cliente', err);
+              res.status(500).send('Erro ao adicionar cliente');
+              return;
+          }          
+          res.status(201).send('cliente adicionada com sucesso');
+      }
+
+  );
+}
+);
+};
 
 
 
