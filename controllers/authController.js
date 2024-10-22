@@ -37,8 +37,7 @@ const registerUser = async (req, res) => {
 //---------------------------------- Função para autenticar um usuário--------------------------------------//
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body; // Desestrutura os dados do corpo da requisição
-
+  const { email, password } = req.body; 
  //---------------------------------- Verificar se o usuário existe no banco de dados-------------------------------------//
 
   try {
@@ -93,7 +92,7 @@ const requestPasswordReset = async (req, res) => {
   };
   
   //--------------------------------------- Função para redefinir a senha----------------------------------------------//
-  
+
   const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
   
@@ -116,7 +115,8 @@ const requestPasswordReset = async (req, res) => {
   };
   
     
-// Exporta as funções 'registerUser', 'loginUser', 'requestPasswordReset' e 'resetPassword' para que possam ser acessadas e utilizadas em outros módulos da aplicação.
+//--------------------------------------------- Exporta as funções-------------------------------//
+
 module.exports = {
   registerUser,
   loginUser,

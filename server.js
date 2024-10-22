@@ -1,36 +1,31 @@
 const dotenv = require('dotenv'); // Importa o módulo 'dotenv', que carrega variáveis de ambiente de um arquivo '.env' para dentro de 'process.env', permitindo o uso de variáveis de ambiente na aplicação.
-dotenv.config();// Carrega as variáveis de ambiente do arquivo '.env' para o 'process.env', tornando-as acessíveis em toda a aplicação.
+dotenv.config();
 
-//Importar as Bibliotecas
+//------------------------------------------Importar as Bibliotecas-----------------------------------//
 
-const express = require('express'); // Importa o módulo 'express', um framework web para Node.js, utilizado para criar e gerenciar servidores e rotas de maneira simples e eficiente.
-const cors = require('cors'); // Importa o módulo 'cors', que será utilizado para habilitar o Cross-Origin Resource Sharing (CORS), permitindo que a aplicação receba requisições de diferentes origens.
-const bodyParser = require('body-parser'); // Importa o módulo 'body-parser', que será utilizado para processar e converter o corpo das requisições HTTP em formatos como JSON, facilitando o acesso aos dados enviados no 'req.body'.
+const express = require('express'); 
+const cors = require('cors'); 
+const bodyParser = require('body-parser'); 
 const db = require('./config/db'); 
 
-// Importa as rotas de transações
+//-------------------------------------- Importa as rotas de transações------------------------------------------//
 
-const clientesRoutes = require('./routes/clientes'); // Importa as rotas de transações a partir do arquivo 'clientes.js' localizado na pasta 'routes', para gerenciar as operações relacionadas a transações na aplicação.
-const authRoutes = require('./routes/auth'); // Importa as rotas de autenticação do arquivo 'auth.js' na pasta 'routes', que define as rotas para operações como login, registro e recuperação de senha.
-
+const clientesRoutes = require('./routes/clientes'); 
+const authRoutes = require('./routes/auth');
 
 //inicializar nova aplicação Express
 
-const app = express(); // Cria uma instância do aplicativo Express, chamada 'app', que será usada para configurar o servidor, definir rotas e gerenciar requisições HTTP.
-
+const app = express(); 
 
 //configurar o CORS e o bady-Parse
 
-app.use(cors()); // Habilita o middleware 'cors' em toda a aplicação, permitindo que ela aceite requisições de diferentes origens (Cross-Origin Resource Sharing).
-app.use(bodyParser.json()); // Configura o middleware 'body-parser' para processar requisições com o corpo no formato JSON, permitindo que o conteúdo seja acessado através de 'req.body'.
-
-
+app.use(cors()); 
+app.use(bodyParser.json());
 // Usar as rotas de clientes para todas as requisições que começam com /api/transactions
-app.use('/veronica-folheados/clientes', clientesRoutes); // Configura o middleware para as rotas de transações, prefixando todas as rotas de 'clientesRoutes' com '/veronica-folheados/clientes'.
-app.use('/veronica-folheados/auth', authRoutes); // Configura o middleware para as rotas de autenticação, prefixando todas as rotas de 'authRoutes' com '/api/auth'.
+app.use('/veronica-folheados/clientes', clientesRoutes); 
+app.use('/veronica-folheados/auth', authRoutes);
 
-
-//Rota inicial para testar o servidor
+//---------------------------------Rota inicial para testar o servidor------------------------//
 
 app.get('/', (req, res) => {
   res.send(`Servidor está rodando na porta ${PORT}`); // Define uma rota inicial para testar o servidor
