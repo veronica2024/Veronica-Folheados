@@ -3,7 +3,7 @@ const router = express.Router(); // Cria um novo roteador, um novo objeto 'route
 const authController = require('../controllers/authController'); // Importa o 'authController', responsável por gerenciar as operações relacionadas à autenticação, como login, registro e verificação de tokens.
 
 
-// Define uma rota POST para '/register', que chama a função 'registerUser' do 'authController' para registrar um novo usuário.
+//---- Define uma rota POST para '/register', que chama a função 'registerUser' do 'authController' para registrar um novo usuário.
 router.post('/register', authController.registerUser);
 
 
