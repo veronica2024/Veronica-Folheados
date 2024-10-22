@@ -8,7 +8,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser'); 
 const db = require('./config/db'); 
 
-//-------------------------------------- Importa as rotas de transações------------------------------------------//
+//-------------------------------------- Importa as rotas dos clientes------------------------------------------//
 
 const clientesRoutes = require('./routes/clientes'); 
 const authRoutes = require('./routes/auth');
@@ -21,7 +21,9 @@ const app = express();
 
 app.use(cors()); 
 app.use(bodyParser.json());
-// Usar as rotas de clientes para todas as requisições que começam com /api/transactions
+
+// ------------Usar as rotas de clientes para todas as requisições que começam com /api/transactions----------------------------------//
+
 app.use('/veronica-folheados/clientes', clientesRoutes); 
 app.use('/veronica-folheados/auth', authRoutes);
 

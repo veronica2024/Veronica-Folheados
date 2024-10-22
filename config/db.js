@@ -1,7 +1,6 @@
 const mysql = require('mysql2'); // Importa o módulo 'mysql2', que será utilizado para criar conexões e interagir com um banco de dados MySQL na aplicação.
 
 //------------------------------------- Exibe as variáveis de ambiente carregadas----------------------------------------//
-//------------------------------------ Depois pode apagar---------------------------------------------------------------//
 
 console.log('DB_HOST:', process.env.DB_HOST);
 console.log('DB_USER:', process.env.DB_USER);
